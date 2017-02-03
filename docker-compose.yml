@@ -1,0 +1,91 @@
+db1:
+  image: percona:latest
+  environment:
+    MYSQL_ROOT_PASSWORD: p3rc0na
+    MYSQL_DATABASE: orchestrator
+    MYSQL_USER: orchestrator
+    MYSQL_PASSWORD: MATCHinORCHESTRATORconf
+  ports:
+    - "13306:3306"
+  volumes:
+    - /var/log/mysql
+    - ./docker/conf/db1:/etc/mysql/conf.d
+
+db2:
+  image: percona:latest
+  environment:
+    MYSQL_ROOT_PASSWORD: p3rc0na
+    MYSQL_DATABASE: orchestrator
+    MYSQL_USER: orchestrator
+    MYSQL_PASSWORD: MATCHinORCHESTRATORconf
+  ports:
+    - "23306:3306"
+  volumes:
+    - /var/log/mysql
+    - ./docker/conf/db2:/etc/mysql/conf.d
+  links:
+    - db1
+
+db3:
+  image: percona:latest
+  environment:
+    MYSQL_ROOT_PASSWORD: p3rc0na
+    MYSQL_DATABASE: orchestrator
+    MYSQL_USER: orchestrator
+    MYSQL_PASSWORD: MATCHinORCHESTRATORconf
+  ports:
+    - "33306:3306"
+  volumes:
+    - /var/log/mysql
+    - ./docker/conf/db3:/etc/mysql/conf.d
+  links:
+    - db1
+
+db4:
+  image: percona:latest
+  environment:
+    MYSQL_ROOT_PASSWORD: p3rc0na
+    MYSQL_DATABASE: orchestrator
+    MYSQL_USER: orchestrator
+    MYSQL_PASSWORD: MATCHinORCHESTRATORconf
+  ports:
+    - "43306:3306"
+  volumes:
+    - /var/log/mysql
+    - ./docker/conf/db4:/etc/mysql/conf.d
+  links:
+    - db1
+
+db5:
+  image: percona:latest
+  environment:
+    MYSQL_ROOT_PASSWORD: p3rc0na
+    MYSQL_DATABASE: orchestrator
+    MYSQL_USER: orchestrator
+    MYSQL_PASSWORD: MATCHinORCHESTRATORconf
+  ports:
+    - "53306:3306"
+  volumes:
+    - /var/log/mysql
+    - ./docker/conf/db5:/etc/mysql/conf.d
+  links:
+    - db4
+
+orchestrator:
+  build: .
+  ports:
+    - "3000:3000"
+  links:
+    - db1
+    - db2
+    - db3
+    - db4
+    - db5
+  environment:
+    - ORC_TOPOLOGY_USER=root
+    - ORC_TOPOLOGY_PASSOWRD=p3rc0na
+    - ORC_DB_HOST=db1
+    - ORC_DB_PORT=3306
+    - ORC_DB_NAME=orchestrator
+    - ORC_USER=root
+    - ORC_PASSWORD=p3rc0na
